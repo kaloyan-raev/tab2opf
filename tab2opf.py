@@ -87,6 +87,7 @@ def parseargs():
                         help="Import module for mapping, getkey, getdef")
     parser.add_argument("-s", "--source", default="en", help="Source language")
     parser.add_argument("-t", "--target", default="en", help="Target language")
+    parser.add_argument("-n", "--title", help="Dictionary title")
     parser.add_argument("file", help="tab file to input")    
     return parser.parse_args()
 
@@ -113,6 +114,7 @@ FILENAME = args.file
 MODULE   = args.module
 INLANG   = args.source
 OUTLANG  = args.target
+TITLE    = args.title
 importmod()
 
 # add a single [term, definition]
@@ -272,7 +274,7 @@ def openopf(ndicts, name):
 	<dc-metadata>
 		<dc:Identifier id="uid">{name}</dc:Identifier>
 		<!-- Title of the document -->
-		<dc:Title><h2>{name}</h2></dc:Title>
+		<dc:Title><h2>{title}</h2></dc:Title>
 		<dc:Language>EN</dc:Language>
 	</dc-metadata>
 	<x-metadata>
@@ -284,7 +286,7 @@ def openopf(ndicts, name):
 
 <!-- list of all the files needed to produce the .prc file -->
 <manifest>
-""".format(name=name, source=INLANG, target=OUTLANG))
+""".format(name=name, source=INLANG, target=OUTLANG, title=title))
 
         yield to
 
@@ -325,6 +327,7 @@ def writeopf(ndicts, name):
 print("Reading keys")
 defns = readkeys()
 name = os.path.splitext(os.path.basename(FILENAME))[0]
+title = (TITLE if TITLE else name)
 print("Writing keys")
 ndicts = writekeys(defns, name)
 print("Writing opf")
